@@ -20,8 +20,6 @@ func Scrape() {
 	c := colly.NewCollector(
 		colly.AllowedDomains("fenix.tecnico.ulisboa.pt/disciplinas"))
 
-	c.Visit("fenix.tecnico.ulisboa.pt/disciplinas/OC112/2025-2026/1-semestre/laboratorios")
-
 	c.OnHTML("content-block", func(h *colly.HTMLElement) {
 		announcement := Announcement{}
 
@@ -35,4 +33,6 @@ func Scrape() {
 			fmt.Print(announcements[i].Link)
 		}
 	})
+
+	c.Visit("fenix.tecnico.ulisboa.pt/disciplinas/OC112/2025-2026/1-semestre/laboratorios")
 }
