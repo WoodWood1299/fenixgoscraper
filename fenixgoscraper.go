@@ -42,3 +42,7 @@ func Scrape() {
 	c.Visit("fenix.tecnico.ulisboa.pt/disciplinas/OC112/2025-2026/1-semestre/laboratorios")
 	fmt.Print("Done\n")
 }
+
+func test() {
+	fmt.Print("Test\n")
+}
