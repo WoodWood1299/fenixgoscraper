@@ -2,8 +2,9 @@ package fenixgoscraper
 
 import (
 	"fmt"
+	"html"
 
-	"github.com/gocolly/colly"
+	"github.com/mmcdole/gofeed"
 )
 
 type Announcement struct {
@@ -14,51 +15,25 @@ func ScrapeOut() {
 	fmt.Print("TEST\n")
 }
 
-func onHTML(announcements *[]Announcement, h *colly.HTMLElement) {
-	announcement := Announcement{}
-	announcement.Link = h.ChildAttr("a", "href")
-	announcement.Message = h.Text
-	*announcements = append(*announcements, announcement)
-}
-
-func onScrape(announcements *[]Announcement) {
-	for _, a := range *announcements {
-		fmt.Printf("- %s\n\t%s\n\n", a.Message, a.Link)
-	}
-}
-
-func scraperSetup(announcements *[]Announcement) *colly.Collector {
-	c := colly.NewCollector(
-		colly.AllowedDomains("fenix.tecnico.ulisboa.pt"),
-	)
-
-	c.OnHTML("h5[style]", func(h *colly.HTMLElement) {
-		onHTML(announcements, h)
-	})
-
-	c.OnScraped(func(r *colly.Response) {
-		onScrape(announcements)
-	})
-
-	return c
-}
-
 func Scrape() {
 	fmt.Print("Running\n")
 	links := [4]string{
-		"https://fenix.tecnico.ulisboa.pt/disciplinas/Apre2222/2025-2026/1-semestre/anuncios",
-		"https://fenix.tecnico.ulisboa.pt/disciplinas/OC112/2025-2026/1-semestre/anuncios",
-		"https://fenix.tecnico.ulisboa.pt/disciplinas/Mod112/2025-2026/1-semestre/anuncios",
-		"https://fenix.tecnico.ulisboa.pt/disciplinas/RC112/2025-2026/1-semestre/anuncios",
+		"https://fenix.tecnico.ulisboa.pt/disciplinas/OC112/2025-2026/1-semestre/rss/announcement",
+		"https://fenix.tecnico.ulisboa.pt/disciplinas/Apre2222/2025-2026/1-semestre/rss/announcement",
+		"https://fenix.tecnico.ulisboa.pt/disciplinas/OC112/2025-2026/1-semestre/rss/announcement",
+		"https://fenix.tecnico.ulisboa.pt/disciplinas/RC112/2025-2026/1-semestre/rss/announcement",
 	}
 
-	var announcements []Announcement
-	c := scraperSetup(&announcements)
+	fp := gofeed.NewParser()
 
-	for _, link := range links {
-		fmt.Println("XXX VISITING XXX")
-		c.Visit(link)
-		announcements = nil
+	for _, l := range links {
+		feed, _ := fp.ParseURL(l)
+		fmt.Printf("%s\n", feed.Title)
+
+		items := feed.Items
+		for _, a := range items {
+			fmt.Printf("- %s\n\t%s\n\n", html.UnescapeString(a.Title), a.Link)
+		}
 	}
 	fmt.Print("Done\n")
 }
