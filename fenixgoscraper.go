@@ -10,8 +10,8 @@ type Announcement struct {
 	Link string
 }
 
-func ScrapeOut() string {
-	return "I'M SCRAPING\n"
+func ScrapeOut() {
+	fmt.Print("TEST\n")
 }
 
 func Scrape() {
@@ -41,8 +41,4 @@ func Scrape() {
 	fmt.Print("Visiting\n")
 	c.Visit("fenix.tecnico.ulisboa.pt/disciplinas/OC112/2025-2026/1-semestre/laboratorios")
 	fmt.Print("Done\n")
-}
-
-func Test() {
-	fmt.Print("Test\n")
 }
