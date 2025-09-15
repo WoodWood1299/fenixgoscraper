@@ -43,6 +43,6 @@ func Scrape() {
 	fmt.Print("Done\n")
 }
 
-func test() {
+func Test() {
 	fmt.Print("Test\n")
 }
