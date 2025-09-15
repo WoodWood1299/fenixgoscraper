@@ -20,7 +20,7 @@ func Scrape() {
 	c := colly.NewCollector(
 		colly.AllowedDomains("fenix.tecnico.ulisboa.pt/disciplinas"))
 
-	c.OnHTML("content-block", func(h *colly.HTMLElement) {
+	c.OnHTML("h5[style=margin-top: 0; font-weight:400]", func(h *colly.HTMLElement) {
 		announcement := Announcement{}
 
 		announcement.Link = h.ChildAttr("a", "href")
