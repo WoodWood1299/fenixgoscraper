@@ -3,7 +3,6 @@ package fenixgoscraper
 import (
 	"errors"
 	"fmt"
-	"html"
 
 	"github.com/mmcdole/gofeed"
 )
@@ -16,29 +15,41 @@ func ScrapeOut() {
 	fmt.Print("TEST\n")
 }
 
-func Scrape(links []string, announcement_count int) (string, error) {
+func createAnnouncement(Item *gofeed.Item) Announcement {
+	var a Announcement
+	a.Link = Item.Link
+	a.Message = Item.Title
+	return a
+}
+
+func Scrape(links []string, announcement_count int) ([][]Announcement, error) {
 
 	if len(links) == 0 {
-		return "", errors.New("link array cannot be empty")
+		return nil, errors.New("link array cannot be empty")
 	}
 
-	var out string
+	announcements := make([][]Announcement, len(links))
+	for i := range announcements {
+		announcements[i] = make([]Announcement, announcement_count)
+	}
+
 	fp := gofeed.NewParser()
 
-	for _, l := range links {
+	for i, l := range links {
 		feed, err := fp.ParseURL(l)
 
 		if err != nil {
-			return "", errors.New("error parsing RSS")
+			return nil, errors.New("error parsing RSS")
 		}
 
-		out += fmt.Sprintf("%s\n", feed.Title)
+		//out += fmt.Sprintf("%s\n", feed.Title)
 
 		items := feed.Items
-		for i := 0; i < announcement_count; i++ {
-			out += fmt.Sprintf("- %s\n\t%s\n\n", html.UnescapeString(items[i].Title), items[i].Link)
+		for j := 0; j < announcement_count; j++ {
+			announcements[i][j] = createAnnouncement(items[j])
+			//out += fmt.Sprintf("- %s\n\t%s\n\n", html.UnescapeString(items[i].Title), items[i].Link)
 		}
 	}
 
-	return out, nil
+	return announcements, nil
 }
