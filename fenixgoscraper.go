@@ -36,10 +36,8 @@ func Scrape(links []string, announcement_count int) (string, error) {
 
 		items := feed.Items
 		for i := 0; i < announcement_count; i++ {
-			out += fmt.Sprintf("- %s\n\t%s\n\n", html.UnescapeString(items[i].Title), items[1].Link)
+			out += fmt.Sprintf("- %s\n\t%s\n\n", html.UnescapeString(items[i].Title), items[i].Link)
 		}
-
-		//out += fmt.Sprintf("- %s\n\t%s\n\n", html.UnescapeString(items[0].Title), items[0].Link)
 	}
 
 	return out, nil
