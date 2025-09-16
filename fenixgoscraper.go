@@ -35,9 +35,11 @@ func Scrape(links []string) (string, error) {
 		out += fmt.Sprintf("%s\n", feed.Title)
 
 		items := feed.Items
-		for _, a := range items {
-			out += fmt.Sprintf("- %s\n\t%s\n\n", html.UnescapeString(a.Title), a.Link)
-		}
+		//for _, a := range items {
+		//	out += fmt.Sprintf("- %s\n\t%s\n\n", html.UnescapeString(a.Title), a.Link)
+		//}
+
+		out += fmt.Sprintf("- %s\n\t%s\n\n", html.UnescapeString(items[0].Title), items[0].Link)
 	}
 
 	return out, nil
