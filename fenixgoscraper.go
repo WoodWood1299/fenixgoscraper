@@ -35,19 +35,17 @@ func Scrape(links []string, announcement_count int) ([][]Announcement, error) {
 
 	fp := gofeed.NewParser()
 
-	for i, l := range links {
-		feed, err := fp.ParseURL(l)
+	for i, link := range links {
+		feed, err := fp.ParseURL(link)
 
 		if err != nil {
 			return nil, errors.New("error parsing RSS")
 		}
 
-		//out += fmt.Sprintf("%s\n", feed.Title)
-
 		items := feed.Items
-		for j := 0; j < announcement_count; j++ {
+		count := min(announcement_count, len(items))
+		for j := 0; j < count; j++ {
 			announcements[i][j] = createAnnouncement(items[j])
-			//out += fmt.Sprintf("- %s\n\t%s\n\n", html.UnescapeString(items[i].Title), items[i].Link)
 		}
 	}
 
