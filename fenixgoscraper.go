@@ -3,6 +3,7 @@ package fenixgoscraper
 import (
 	"errors"
 	"fmt"
+	"html"
 
 	"github.com/mmcdole/gofeed"
 )
@@ -11,31 +12,32 @@ type Announcement struct {
 	Link, Message string
 }
 
-func ScrapeOut() {
-	fmt.Print("TEST\n")
-}
-
-func createAnnouncement(Item *gofeed.Item) Announcement {
+func CreateAnnouncement(Item *gofeed.Item) Announcement {
 	var a Announcement
 	a.Link = Item.Link
 	a.Message = Item.Title
 	return a
 }
 
-func Scrape(links []string, announcement_count int) ([][]Announcement, error) {
+func StringAnnouncement(announcement Announcement) string {
+	return fmt.Sprintf("- %s\n\t%s\n\n", html.UnescapeString(announcement.Message), announcement.Link)
+}
 
-	if len(links) == 0 {
+func Scrape(disciplina_links map[string]string, announcement_count int) (map[string][]Announcement, error) {
+
+	if len(disciplina_links) == 0 {
 		return nil, errors.New("link array cannot be empty")
 	}
 
-	announcements := make([][]Announcement, len(links))
-	for i := range announcements {
-		announcements[i] = make([]Announcement, announcement_count)
+	announcements := make(map[string][]Announcement, len(disciplina_links))
+
+	for disciplina := range disciplina_links {
+		announcements[disciplina] = make([]Announcement, announcement_count)
 	}
 
 	fp := gofeed.NewParser()
 
-	for i, link := range links {
+	for disciplina, link := range disciplina_links {
 		feed, err := fp.ParseURL(link)
 
 		if err != nil {
@@ -45,7 +47,7 @@ func Scrape(links []string, announcement_count int) ([][]Announcement, error) {
 		items := feed.Items
 		count := min(announcement_count, len(items))
 		for j := 0; j < count; j++ {
-			announcements[i][j] = createAnnouncement(items[j])
+			announcements[disciplina][j] = CreateAnnouncement(items[j])
 		}
 	}
 
