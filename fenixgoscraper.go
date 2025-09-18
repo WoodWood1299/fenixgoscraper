@@ -20,7 +20,7 @@ func CreateAnnouncement(Item *gofeed.Item) Announcement {
 }
 
 func StringAnnouncement(announcement Announcement) string {
-	return fmt.Sprintf("%s\n\t%s\n\n", html.UnescapeString(announcement.Message), announcement.Link)
+	return fmt.Sprintf("%s\n%s\n\n", html.UnescapeString(announcement.Message), announcement.Link)
 }
 
 func Scrape(disciplina_links map[string]string, announcement_count int) (map[string][]Announcement, error) {
