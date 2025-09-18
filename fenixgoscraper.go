@@ -12,7 +12,7 @@ type Announcement struct {
 	Link, Message string
 }
 
-func CreateAnnouncement(Item *gofeed.Item) Announcement {
+func extractAnnouncement(Item *gofeed.Item) Announcement {
 	var a Announcement
 	a.Link = Item.Link
 	a.Message = Item.Title
@@ -47,7 +47,7 @@ func Scrape(disciplina_links map[string]string, announcement_count int) (map[str
 		items := feed.Items
 		count := min(announcement_count, len(items))
 		for j := 0; j < count; j++ {
-			announcements[disciplina][j] = CreateAnnouncement(items[j])
+			announcements[disciplina][j] = extractAnnouncement(items[j])
 		}
 	}
 
