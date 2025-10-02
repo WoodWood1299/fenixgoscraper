@@ -16,7 +16,7 @@ type Announcement struct {
 func extractAnnouncement(Item *gofeed.Item) Announcement {
 	var a Announcement
 	a.Link = Item.Link
-	a.Message = Item.Title
+	a.Message = html.UnescapeString(Item.Title)
 	return a
 }
 
