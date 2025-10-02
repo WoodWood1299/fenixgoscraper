@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"html"
+	"sort"
 
 	"github.com/mmcdole/gofeed"
 )
@@ -45,6 +46,17 @@ func Scrape(disciplina_links map[string]string, announcement_count int) (map[str
 		}
 
 		items := feed.Items
+
+		sort.Slice(items, func(i, j int) bool {
+			if items[i].PublishedParsed == nil {
+				return false
+			}
+			if items[j].PublishedParsed == nil {
+				return true
+			}
+			return items[i].PublishedParsed.After(*items[j].PublishedParsed)
+		})
+
 		count := min(announcement_count, len(items))
 		for j := 0; j < count; j++ {
 			announcements[disciplina][j] = extractAnnouncement(items[j])
